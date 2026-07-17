@@ -1,7 +1,7 @@
 package com.jumpstart.loadshedhub.controller;
 
 import com.jumpstart.loadshedhub.dto.ReportRequestDTO;
-import com.jumpstart.loadshedhub.dto.ResponseDTO;
+import com.jumpstart.loadshedhub.dto.Response;
 import com.jumpstart.loadshedhub.entity.Report;
 import com.jumpstart.loadshedhub.entity.User;
 import com.jumpstart.loadshedhub.service.ReportService;
@@ -21,91 +21,47 @@ public class ReportController {
 
     private final ReportService reportService;
 
-    /**
-     * POST /api/reports
-     * Submit a new crowd-sourced check-in at a hub.
-     */
     @PostMapping
-    public ResponseEntity<ResponseDTO<Report>> createReport(
+    public ResponseEntity<Response<Report>> createReport(
             @Valid @RequestBody ReportRequestDTO dto,
             @AuthenticationPrincipal User user) {
-
         Report report = reportService.createReport(dto, user);
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(ResponseDTO.success(report, "Check-in submitted successfully! 🇿🇦"));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(Response.success("Check-in submitted successfully", report));
     }
 
-    /**
-     * GET /api/reports/location/{locationId}
-     * Get all reports for a specific hub.
-     */
     @GetMapping("/location/{locationId}")
-    public ResponseEntity<ResponseDTO<List<Report>>> getReportsByLocation(
-            @PathVariable Long locationId) {
-
+    public ResponseEntity<Response<List<Report>>> getReportsByLocation(@PathVariable Long locationId) {
         List<Report> reports = reportService.getReportsByLocation(locationId);
-        return ResponseEntity.ok(
-                ResponseDTO.success(reports, "Reports retrieved for location " + locationId)
-        );
+        return ResponseEntity.ok(Response.success("Reports retrieved for location " + locationId, reports));
     }
 
-    /**
-     * GET /api/reports/location/{locationId}/recent
-     * Get fresh reports (last 4 hours) for a hub — "Is power ON right now?"
-     */
     @GetMapping("/location/{locationId}/recent")
-    public ResponseEntity<ResponseDTO<List<Report>>> getRecentReports(
-            @PathVariable Long locationId) {
-
+    public ResponseEntity<Response<List<Report>>> getRecentReports(@PathVariable Long locationId) {
         List<Report> reports = reportService.getRecentReports(locationId);
-        return ResponseEntity.ok(
-                ResponseDTO.success(reports, "Recent reports (last 4 hours)")
-        );
+        return ResponseEntity.ok(Response.success("Recent reports from the last 4 hours", reports));
     }
 
-    /**
-     * GET /api/reports/mine
-     * Get all reports submitted by the currently logged-in user.
-     */
     @GetMapping("/mine")
-    public ResponseEntity<ResponseDTO<List<Report>>> getMyReports(
-            @AuthenticationPrincipal User user) {
-
+    public ResponseEntity<Response<List<Report>>> getMyReports(@AuthenticationPrincipal User user) {
         List<Report> reports = reportService.getMyReports(user);
-        return ResponseEntity.ok(
-                ResponseDTO.success(reports, "Your reports retrieved")
-        );
+        return ResponseEntity.ok(Response.success("Your reports retrieved", reports));
     }
 
-    /**
-     * PUT /api/reports/{reportId}
-     * Edit a report (within 30-minute window, owner only).
-     */
     @PutMapping("/{reportId}")
-    public ResponseEntity<ResponseDTO<Report>> updateReport(
+    public ResponseEntity<Response<Report>> updateReport(
             @PathVariable Long reportId,
             @Valid @RequestBody ReportRequestDTO dto,
             @AuthenticationPrincipal User user) {
-
         Report report = reportService.updateReport(reportId, dto, user);
-        return ResponseEntity.ok(
-                ResponseDTO.success(report, "Report updated successfully")
-        );
+        return ResponseEntity.ok(Response.success("Report updated successfully", report));
     }
 
-    /**
-     * DELETE /api/reports/{reportId}
-     * Delete a report (owner only).
-     */
     @DeleteMapping("/{reportId}")
-    public ResponseEntity<ResponseDTO<Void>> deleteReport(
+    public ResponseEntity<Response<Void>> deleteReport(
             @PathVariable Long reportId,
             @AuthenticationPrincipal User user) {
-
         reportService.deleteReport(reportId, user);
-        return ResponseEntity.ok(
-                ResponseDTO.success(null, "Report deleted successfully")
-        );
+        return ResponseEntity.ok(Response.success("Report deleted successfully", null));
     }
 }

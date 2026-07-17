@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 //Safety net for entire App
 //Catches errors before they crash the server and return formatted response
@@ -16,6 +17,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Response<Void>> handleResourceNotFound(ResourceNotFoundException ex) {
         Response<Void> errorResponse = Response.error(ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler({IllegalStateException.class, MethodArgumentNotValidException.class})
+    public ResponseEntity<Response<Void>> handleBadRequest(Exception ex) {
+        return new ResponseEntity<>(Response.error(ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     //Catches any other expected errors

@@ -4,7 +4,7 @@ import com.jumpstart.loadshedhub.dto.ReportRequestDTO;
 import com.jumpstart.loadshedhub.entity.Location;
 import com.jumpstart.loadshedhub.entity.Report;
 import com.jumpstart.loadshedhub.entity.User;
-import com.jumpstart.loadshedhub.exception.NotFoundException;
+import com.jumpstart.loadshedhub.exception.ResourceNotFoundException;
 import com.jumpstart.loadshedhub.repository.LocationRepository;
 import com.jumpstart.loadshedhub.repository.ReportRepository;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +35,7 @@ public class ReportService {
 
         // 1. Validate location exists
         Location location = locationRepository.findById(dto.getLocationId())
-                .orElseThrow(() -> new NotFoundException(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "Location not found with id: " + dto.getLocationId()
                 ));
 
@@ -72,7 +72,7 @@ public class ReportService {
     @Transactional(readOnly = true)
     public List<Report> getReportsByLocation(Long locationId) {
         Location location = locationRepository.findById(locationId)
-                .orElseThrow(() -> new NotFoundException(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "Location not found with id: " + locationId
                 ));
         return reportRepository.findByLocationOrderByCreatedAtDesc(location);
@@ -84,7 +84,7 @@ public class ReportService {
     @Transactional(readOnly = true)
     public List<Report> getRecentReports(Long locationId) {
         Location location = locationRepository.findById(locationId)
-                .orElseThrow(() -> new NotFoundException(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "Location not found with id: " + locationId
                 ));
         LocalDateTime since = LocalDateTime.now().minusHours(REPORT_FRESHNESS_HOURS);
@@ -104,7 +104,7 @@ public class ReportService {
      */
     public void deleteReport(Long reportId, User user) {
         Report report = reportRepository.findById(reportId)
-                .orElseThrow(() -> new NotFoundException(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "Report not found with id: " + reportId
                 ));
 
@@ -122,7 +122,7 @@ public class ReportService {
      */
     public Report updateReport(Long reportId, ReportRequestDTO dto, User user) {
         Report report = reportRepository.findById(reportId)
-                .orElseThrow(() -> new NotFoundException(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "Report not found with id: " + reportId
                 ));
 
