@@ -1,6 +1,7 @@
 package com.jumpstart.loadshedhub.exception;
 
 import com.jumpstart.loadshedhub.dto.ResponseDTO;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -31,7 +32,15 @@ public class GlobalExceptionHandler {
     //Returns 500 Internal Server Error
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ResponseDTO<Void>> handleGeneralException(Exception ex) {
+        ex.printStackTrace();
         ResponseDTO<Void> errorResponse = ResponseDTO.error("An unexpected internal server error occurred");
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    //Duplicate entry error
+    //409 Conflict
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<String> handleDuplicateEmail(DataIntegrityViolationException ex) {
+        return new ResponseEntity<>("Error: This email address is already registered.", HttpStatus.CONFLICT);
     }
 }
