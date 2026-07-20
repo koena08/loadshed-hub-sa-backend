@@ -1,0 +1,21 @@
+package com.jumpstart.loadshedhub.dto;
+
+import lombok.Data;
+import java.util.Set;
+
+//Defines exact JSON structure the React frontend must send
+//when attempting to create or update a location
+@Data
+public class LocationRequest {
+    private String name;
+    private String address;
+
+    //Gps coordinates for map plotting on the frontend
+    private Double latitude;
+    private Double longitude;
+
+    private String operatingHours;
+
+    //List of IDs representing available amenities
+    private Set<Long> amenityIds;
+}
