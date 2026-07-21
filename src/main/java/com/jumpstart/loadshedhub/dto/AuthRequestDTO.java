@@ -7,8 +7,19 @@ import lombok.Data;
 
 @Data
 public class AuthRequestDTO {
+<<<<<<< HEAD
     @NotBlank @Email private String email;
     @NotBlank @Size(min = 8) private String password;
+=======
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email must be valid")
+    private String email;
+
+    @NotBlank(message = "Password is required")
+    @Size(min = 8, message = "Password must be at least 8 characters")
+    private String password;
+
+>>>>>>> bce1c30216c5b82041fddfb22f56fd1f90b24ccf
     private String firstName;
     private String lastName;
 }
