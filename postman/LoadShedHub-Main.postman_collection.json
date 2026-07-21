@@ -1,0 +1,18 @@
+{
+  "info":{"name":"LoadShed Hub API - Main Test Suite","schema":"https://schema.getpostman.com/json/collection/v2.1.0/collection.json"},
+  "variable":[{"key":"baseUrl","value":"http://localhost:8080"},{"key":"token","value":""},{"key":"locationId","value":"1"},{"key":"reportId","value":"1"}],
+  "item":[
+    {"name":"01 Register citizen","request":{"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"firstName\":\"Test\",\"lastName\":\"Citizen\",\"email\":\"citizen@example.com\",\"password\":\"Password123\"}"},"url":"{{baseUrl}}/api/auth/register"}},
+    {"name":"02 Login and save JWT","event":[{"listen":"test","script":{"exec":["pm.collectionVariables.set('token', pm.response.json().data.token);"]}}],"request":{"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"email\":\"citizen@example.com\",\"password\":\"Password123\"}"},"url":"{{baseUrl}}/api/auth/login"}},
+    {"name":"03 Login bad password","request":{"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"email\":\"citizen@example.com\",\"password\":\"WrongPassword123\"}"},"url":"{{baseUrl}}/api/auth/login"}},
+    {"name":"04 Get all reports for location","request":{"method":"GET","header":[{"key":"Authorization","value":"Bearer {{token}}"}],"url":"{{baseUrl}}/api/reports/location/{{locationId}}"}},
+    {"name":"05 Get recent reports","request":{"method":"GET","header":[{"key":"Authorization","value":"Bearer {{token}}"}],"url":"{{baseUrl}}/api/reports/location/{{locationId}}/recent"}},
+    {"name":"06 Get my reports","request":{"method":"GET","header":[{"key":"Authorization","value":"Bearer {{token}}"}],"url":"{{baseUrl}}/api/reports/mine"}},
+    {"name":"07 Create ON report","request":{"method":"POST","header":[{"key":"Authorization","value":"Bearer {{token}}"},{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"locationId\":{{locationId}},\"powerStatus\":\"ON\",\"wifiStatus\":\"AVAILABLE\",\"crowdLevel\":\"LOW\",\"safetyRating\":\"SAFE\",\"comment\":\"Power is on.\"}"},"url":"{{baseUrl}}/api/reports"}},
+    {"name":"08 Create invalid report","request":{"method":"POST","header":[{"key":"Authorization","value":"Bearer {{token}}"},{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"locationId\":{{locationId}},\"powerStatus\":\"\"}"},"url":"{{baseUrl}}/api/reports"}},
+    {"name":"09 Create report missing location","request":{"method":"POST","header":[{"key":"Authorization","value":"Bearer {{token}}"},{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"locationId\":999999,\"powerStatus\":\"ON\"}"},"url":"{{baseUrl}}/api/reports"}},
+    {"name":"10 Update report","request":{"method":"PUT","header":[{"key":"Authorization","value":"Bearer {{token}}"},{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\"locationId\":{{locationId}},\"powerStatus\":\"OFF\",\"comment\":\"Power has gone off.\"}"},"url":"{{baseUrl}}/api/reports/{{reportId}}"}},
+    {"name":"11 Delete report","request":{"method":"DELETE","header":[{"key":"Authorization","value":"Bearer {{token}}"}],"url":"{{baseUrl}}/api/reports/{{reportId}}"}},
+    {"name":"12 Unauthorized report request","request":{"method":"GET","url":"{{baseUrl}}/api/reports/mine"}}
+  ]
+}
