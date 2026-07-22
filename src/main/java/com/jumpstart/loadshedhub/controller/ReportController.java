@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -21,40 +20,6 @@ public class ReportController {
     private final ReportService reportService;
 
     @PostMapping
-<<<<<<< HEAD
-    @PreAuthorize("hasAnyRole('CITIZEN','ADMIN')")
-    public ResponseEntity<Response<Report>> create(@Valid @RequestBody ReportRequestDTO dto, @AuthenticationPrincipal User user) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(Response.success("Check-in submitted", reportService.createReport(dto, user)));
-    }
-
-    @GetMapping("/location/{locationId}")
-    public Response<List<Report>> getByLocation(@PathVariable Long locationId) {
-        return Response.success("Reports retrieved", reportService.getReportsByLocation(locationId));
-    }
-
-    @GetMapping("/location/{locationId}/recent")
-    public Response<List<Report>> getRecent(@PathVariable Long locationId) {
-        return Response.success("Recent reports retrieved", reportService.getRecentReports(locationId));
-    }
-
-    @GetMapping("/mine")
-    @PreAuthorize("hasAnyRole('CITIZEN','ADMIN')")
-    public Response<List<Report>> mine(@AuthenticationPrincipal User user) {
-        return Response.success("Your reports retrieved", reportService.getMyReports(user));
-    }
-
-    @PutMapping("/{reportId}")
-    @PreAuthorize("hasAnyRole('CITIZEN','ADMIN')")
-    public Response<Report> update(@PathVariable Long reportId, @Valid @RequestBody ReportRequestDTO dto, @AuthenticationPrincipal User user) {
-        return Response.success("Report updated", reportService.updateReport(reportId, dto, user));
-    }
-
-    @DeleteMapping("/{reportId}")
-    @PreAuthorize("hasAnyRole('CITIZEN','ADMIN')")
-    public Response<Void> delete(@PathVariable Long reportId, @AuthenticationPrincipal User user) {
-        reportService.deleteReport(reportId, user);
-        return Response.success("Report deleted", null);
-=======
     public ResponseEntity<Response<Report>> createReport(
             @Valid @RequestBody ReportRequestDTO dto,
             @AuthenticationPrincipal User user) {
@@ -96,6 +61,5 @@ public class ReportController {
             @AuthenticationPrincipal User user) {
         reportService.deleteReport(reportId, user);
         return ResponseEntity.ok(Response.success("Report deleted successfully", null));
->>>>>>> bce1c30216c5b82041fddfb22f56fd1f90b24ccf
     }
 }

@@ -32,12 +32,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler({IllegalStateException.class, MethodArgumentNotValidException.class})
-    public ResponseEntity<Response<Void>> handleBadRequest(Exception ex) {
-        return new ResponseEntity<>(Response.error(ex.getMessage()), HttpStatus.BAD_REQUEST);
-    }
-
-    //Catches any other expected errors
+    //Catches any other unexpected errors
     //Returns 500 Internal Server Error
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Response<Void>> handleGeneralException(Exception ex) {

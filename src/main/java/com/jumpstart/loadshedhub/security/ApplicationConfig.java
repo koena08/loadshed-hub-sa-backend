@@ -27,7 +27,6 @@ public class ApplicationConfig {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
-    //Binds database fetcher and password encoder to the authentication process
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(passwordEncoder());
@@ -40,7 +39,6 @@ public class ApplicationConfig {
         return config.getAuthenticationManager();
     }
 
-    //Uses BCrypt to hash passwords securely
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
