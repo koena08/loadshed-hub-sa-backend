@@ -50,5 +50,7 @@ public class Report {
     private LocalDateTime updatedAt;
 
     @Column(nullable = false)
+    @Builder.Default
     private boolean verified = false;
 }
+

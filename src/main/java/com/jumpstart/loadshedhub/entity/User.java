@@ -38,6 +38,7 @@ public class User implements UserDetails {
 
     //maps our custom Role enum as a simple string in the database
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 30)
     private Role role;
 
     @Override

@@ -1,12 +1,14 @@
 package com.jumpstart.loadshedhub.dto;
 
 import lombok.Data;
+import jakarta.validation.constraints.NotBlank;
 import java.util.Set;
 
 //Defines exact JSON structure the React frontend must send
 //when attempting to create or update a location
 @Data
 public class LocationRequest {
+    @NotBlank(message = "Location name is required")
     private String name;
     private String address;
 

@@ -1,50 +1,23 @@
 package com.jumpstart.loadshedhub.service;
 
 import com.jumpstart.loadshedhub.dto.LocationRequest;
-import com.jumpstart.loadshedhub.entity.Location;
+import com.jumpstart.loadshedhub.entity.*;
 import com.jumpstart.loadshedhub.exception.ResourceNotFoundException;
-import com.jumpstart.loadshedhub.repository.LocationRepository;
+import com.jumpstart.loadshedhub.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.util.HashSet;
 
-import java.util.List;
-
-@Service
-@RequiredArgsConstructor
+@Service @RequiredArgsConstructor @Transactional
 public class LocationService {
-
-    private final LocationRepository locationRepository;
-
-    public Location createLocation(LocationRequest dto) {
-        Location location = Location.builder()
-                .name(dto.getName())
-                .address(dto.getAddress())
-                .latitude(dto.getLatitude())
-                .longitude(dto.getLongitude())
-                .build();
-        return locationRepository.save(location);
-    }
-
-    public List<Location> getAllLocations() {
-        return locationRepository.findAll();
-    }
-
-    public Location getLocationById(Long id) {
-        return locationRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Location not found with id: " + id));
-    }
-
-    public Location updateLocation(Long id, LocationRequest dto) {
-        Location location = getLocationById(id);
-        location.setName(dto.getName());
-        location.setAddress(dto.getAddress());
-        location.setLatitude(dto.getLatitude());
-        location.setLongitude(dto.getLongitude());
-        return locationRepository.save(location);
-    }
-
-    public void deleteLocation(Long id) {
-        Location location = getLocationById(id);
-        locationRepository.delete(location);
-    }
+    private final LocationRepository locations;
+    private final AmenityRepository amenities;
+    @Transactional(readOnly=true) public Page<Location> search(String name, Pageable pageable) { return name == null || name.isBlank() ? locations.findAll(pageable) : locations.findByNameContainingIgnoreCase(name, pageable); }
+    @Transactional(readOnly=true) public Location get(Long id) { return locations.findById(id).orElseThrow(() -> new ResourceNotFoundException("Location not found: " + id)); }
+    public Location create(LocationRequest r) { return locations.save(map(new Location(), r)); }
+    public Location update(Long id, LocationRequest r) { return locations.save(map(get(id), r)); }
+    public void delete(Long id) { locations.delete(get(id)); }
+    private Location map(Location l, LocationRequest r) { l.setName(r.getName()); l.setAddress(r.getAddress()); l.setLatitude(r.getLatitude()); l.setLongitude(r.getLongitude()); l.setAmenities(new HashSet<>(r.getAmenityIds() == null ? java.util.List.of() : amenities.findAllById(r.getAmenityIds()))); return l; }
 }

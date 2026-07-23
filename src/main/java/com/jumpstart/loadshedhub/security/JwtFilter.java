@@ -28,9 +28,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 users.findByEmail(jwtUtil.extractEmail(header.substring(7))).ifPresent(user ->
                         SecurityContextHolder.getContext().setAuthentication(
                                 new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities())));
-            } catch (RuntimeException e) {
-                e.printStackTrace();
-            }
+            } catch (RuntimeException ignored) { }
         }
         chain.doFilter(request, response);
     }

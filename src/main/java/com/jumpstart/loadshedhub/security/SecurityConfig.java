@@ -1,49 +1,29 @@
 package com.jumpstart.loadshedhub.security;
 
-import com.jumpstart.loadshedhub.repository.UserRepository;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.context.annotation.*;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import lombok.RequiredArgsConstructor;
 
 @Configuration
-@EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
-
     private final JwtFilter jwtFilter;
-    private final AuthenticationProvider authenticationProvider;
-
-    public SecurityConfig(JwtFilter jwtFilter, AuthenticationProvider authenticationProvider) {
-        this.jwtFilter = jwtFilter;
-        this.authenticationProvider = authenticationProvider;
-    }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/api/search/**", "/api/locations/**").permitAll()
-                        .requestMatchers("/api/business/**").hasAnyRole("BUSINESS_OWNER", "ADMIN")
-                        .requestMatchers("/api/reports/**").hasAnyRole("CITIZEN", "BUSINESS_OWNER", "ADMIN")
-                        .anyRequest().authenticated()
-                )
-                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-
-        return http.build();
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        return http.csrf(c -> c.disable())
+                .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(a -> a
+                        .requestMatchers("/api/auth/**", "/swagger-ui/**", "/api-docs/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/locations/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/locations/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/locations/**").hasRole("ADMIN")
+                        .anyRequest().authenticated())
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
     }
 }
