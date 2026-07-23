@@ -10,14 +10,14 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Response<T> {
+public class ResponseDTO<T> {
     private boolean success;
     private String message;
     private T data;
     private LocalDateTime timestamp;
 
-    public static <T> Response<T> success(String message, T data) {
-        return Response.<T>builder()
+    public static <T> ResponseDTO<T> success(String message, T data) {
+        return ResponseDTO.<T>builder()
                 .success(true)
                 .message(message)
                 .data(data)
@@ -25,8 +25,8 @@ public class Response<T> {
                 .build();
     }
 
-    public static <T> Response<T> error(String message) {
-        return Response.<T>builder()
+    public static <T> ResponseDTO<T> error(String message) {
+        return ResponseDTO.<T>builder()
                 .success(false)
                 .message(message)
                 .data(null)
