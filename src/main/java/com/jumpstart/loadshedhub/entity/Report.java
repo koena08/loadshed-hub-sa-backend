@@ -2,6 +2,7 @@ package com.jumpstart.loadshedhub.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -24,6 +25,9 @@ public class Report {
     @Column(name = "wifi_status", length = 20)
     private String wifiStatus;
 
+    @Column(name = "water_status", length = 20)
+    private String waterStatus;
+
     @Column(name = "crowd_level", length = 20)
     private String crowdLevel;
 
@@ -35,10 +39,12 @@ public class Report {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id", nullable = false)
+    @JsonIgnore
     private Location location;
 
     @CreationTimestamp

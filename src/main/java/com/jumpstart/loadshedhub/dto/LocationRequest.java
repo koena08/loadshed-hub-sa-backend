@@ -17,6 +17,8 @@ public class LocationRequest {
     private Double longitude;
 
     private String operatingHours;
+    private Boolean loadReduction = false;
+    private String scheduleNote;
 
     //List of IDs representing available amenities
     private Set<Long> amenityIds;

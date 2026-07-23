@@ -11,6 +11,5 @@ public class AuthRequestDTO {
     @NotBlank @Size(min = 8) private String password;
     private String firstName;
     private String lastName;
+    private String requestedRole;
 }
-
-

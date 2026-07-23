@@ -24,14 +24,27 @@ public class Location {
     private Double latitude;
     private Double longitude;
 
+    @Column(length = 100)
+    private String operatingHours;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean loadReduction = false;
+
+    @Column(length = 255)
+    private String scheduleNote;
+
     @Column(nullable = false)
     @Builder.Default
     private boolean verified = false;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name="location_amenities", joinColumns=@JoinColumn(name="location_id"), inverseJoinColumns=@JoinColumn(name="amenity_id"))
     @Builder.Default
     private Set<Amenity> amenities = new HashSet<>();
 }
+
+
+
 
 

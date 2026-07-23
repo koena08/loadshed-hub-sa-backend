@@ -55,6 +55,7 @@ public class ReportService {
         Report report = Report.builder()
                 .powerStatus(dto.getPowerStatus().toUpperCase())
                 .wifiStatus(dto.getWifiStatus() != null ? dto.getWifiStatus().toUpperCase() : null)
+                .waterStatus(dto.getWaterStatus() != null ? dto.getWaterStatus().toUpperCase() : null)
                 .crowdLevel(dto.getCrowdLevel() != null ? dto.getCrowdLevel().toUpperCase() : null)
                 .safetyRating(dto.getSafetyRating() != null ? dto.getSafetyRating().toUpperCase() : null)
                 .comment(dto.getComment())

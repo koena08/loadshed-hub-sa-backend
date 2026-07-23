@@ -19,5 +19,8 @@ public class LocationService {
     public Location create(LocationRequest r) { return locations.save(map(new Location(), r)); }
     public Location update(Long id, LocationRequest r) { return locations.save(map(get(id), r)); }
     public void delete(Long id) { locations.delete(get(id)); }
-    private Location map(Location l, LocationRequest r) { l.setName(r.getName()); l.setAddress(r.getAddress()); l.setLatitude(r.getLatitude()); l.setLongitude(r.getLongitude()); l.setAmenities(new HashSet<>(r.getAmenityIds() == null ? java.util.List.of() : amenities.findAllById(r.getAmenityIds()))); return l; }
+    private Location map(Location l, LocationRequest r) { l.setName(r.getName()); l.setAddress(r.getAddress()); l.setLatitude(r.getLatitude()); l.setLongitude(r.getLongitude());
+        l.setOperatingHours(r.getOperatingHours());
+        l.setLoadReduction(Boolean.TRUE.equals(r.getLoadReduction()));
+        l.setScheduleNote(r.getScheduleNote()); l.setAmenities(new HashSet<>(r.getAmenityIds() == null ? java.util.List.of() : amenities.findAllById(r.getAmenityIds()))); return l; }
 }

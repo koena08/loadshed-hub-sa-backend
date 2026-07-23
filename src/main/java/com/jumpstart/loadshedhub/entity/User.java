@@ -1,6 +1,7 @@
 package com.jumpstart.loadshedhub.entity;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,11 +35,11 @@ public class User implements UserDetails {
 
     //stores the hashed BCrypt password
     @Column(nullable = false)
+    @JsonIgnore
     private String password;
 
     //maps our custom Role enum as a simple string in the database
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 30)
     private Role role;
 
     @Override
