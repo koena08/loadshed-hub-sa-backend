@@ -6,6 +6,7 @@ public enum Role {
     //can only view locations & submit check-in reports
     ROLE_CITIZEN,
 
+    //registers business & amenities offered
     ROLE_BUSINESS_OWNER,
 
     //verifies system admin who can add or delete hubs
