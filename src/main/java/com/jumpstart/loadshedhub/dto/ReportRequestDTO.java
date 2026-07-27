@@ -17,6 +17,7 @@ public class ReportRequestDTO {
 
     private String wifiStatus;
     private String waterStatus;
+    private String parkingStatus;
     private String crowdLevel;
     private String safetyRating;
 

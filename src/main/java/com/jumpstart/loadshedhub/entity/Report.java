@@ -29,6 +29,9 @@ public class Report {
     @Column(name = "water_status", length = 20)
     private String waterStatus;
 
+    @Column(name = "parking_status", length = 20)
+    private String parkingStatus;
+
     @Column(name = "crowd_level", length = 20)
     private String crowdLevel;
 
