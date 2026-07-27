@@ -99,6 +99,16 @@ public class ReportService {
         return reportRepository.findByUserOrderByCreatedAtDesc(user);
     }
 
+    @Transactional(readOnly = true)
+    public org.springframework.data.domain.Page<Report> getAllReports(org.springframework.data.domain.Pageable pageable) {
+        return reportRepository.findAll(pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public long countAll() {
+        return reportRepository.count();
+    }
+
     /**
      * Delete a report (only the owner can delete).
      */
@@ -108,7 +118,8 @@ public class ReportService {
                         "Report not found with id: " + reportId
                 ));
 
-        if (!report.getUser().getId().equals(user.getId())) {
+        if (user.getRole() != com.jumpstart.loadshedhub.entity.Role.ROLE_ADMIN
+                && !report.getUser().getId().equals(user.getId())) {
             throw new IllegalStateException(
                     "You can only delete your own reports."
             );

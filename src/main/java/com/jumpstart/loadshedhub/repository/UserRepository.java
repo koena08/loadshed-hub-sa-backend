@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     //check if user exists when they try to log in
     Optional<User> findByEmail(String email);
+    long countByRole(com.jumpstart.loadshedhub.entity.Role role);
 }

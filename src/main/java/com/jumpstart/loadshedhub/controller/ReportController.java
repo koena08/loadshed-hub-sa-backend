@@ -42,6 +42,15 @@ public class ReportController {
         return ResponseDTO.success("Your reports retrieved", reportService.getMyReports(user));
     }
 
+    // Admin moderation feed: every check-in across the whole platform, newest first.
+    @GetMapping("/admin/all")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseDTO<org.springframework.data.domain.Page<Report>> all(
+            @org.springframework.data.web.PageableDefault(size = 25, sort = "createdAt", direction = org.springframework.data.domain.Sort.Direction.DESC)
+            org.springframework.data.domain.Pageable pageable) {
+        return ResponseDTO.success("All reports retrieved", reportService.getAllReports(pageable));
+    }
+
     @PutMapping("/{reportId}")
     @PreAuthorize("hasAnyRole('CITIZEN','ADMIN')")
     public ResponseDTO<Report> update(@PathVariable Long reportId, @Valid @RequestBody ReportRequestDTO dto, @AuthenticationPrincipal User user) {

@@ -17,6 +17,7 @@ public class JpaTestDataSeeder implements CommandLineRunner {
     private final LocationRepository locations;
     private final UserRepository users;
     private final ReportRepository reports;
+    private final StageStatusRepository stageStatusRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Value("${app.seed-data:true}")
@@ -40,12 +41,30 @@ public class JpaTestDataSeeder implements CommandLineRunner {
         locations.save(sandton); locations.save(rosebank); locations.save(braamfontein);
 
         User citizen = user("citizen@example.com", "Test", "Citizen", Role.ROLE_CITIZEN);
+        User owner = user("owner@example.com", "Test", "Owner", Role.ROLE_BUSINESS_OWNER);
         User admin = user("admin@example.com", "Test", "Admin", Role.ROLE_ADMIN);
+
+        if (locations.findAll().stream().noneMatch(l -> l.getOwner() != null)) {
+            Location ownerHub = location("Melville Coffee & Coworking", "7th Street, Melville", -26.1793, 28.0009, false);
+            ownerHub.setOwner(owner);
+            ownerHub.setAmenities(new HashSet<>(Set.of(power, wifi)));
+            locations.save(ownerHub);
+        }
 
         if (reports.count() == 0) {
             reports.save(Report.builder().powerStatus("ON").wifiStatus("AVAILABLE").crowdLevel("LOW").safetyRating("SAFE").comment("Power and Wi-Fi are working.").user(citizen).location(sandton).build());
             reports.save(Report.builder().powerStatus("OFF").wifiStatus("UNAVAILABLE").crowdLevel("HIGH").safetyRating("SAFE").comment("Power is currently off.").user(citizen).location(rosebank).build());
             reports.save(Report.builder().powerStatus("ON").wifiStatus("AVAILABLE").crowdLevel("MEDIUM").safetyRating("SAFE").comment("Quiet study area.").user(admin).location(braamfontein).build());
+        }
+
+        if (stageStatusRepository.count() == 0) {
+            stageStatusRepository.save(StageStatus.builder()
+                    .id(1L)
+                    .stage(2)
+                    .note("Sample data - update this from the admin console")
+                    .updatedAt(java.time.LocalDateTime.now())
+                    .updatedBy(admin.getEmail())
+                    .build());
         }
     }
 

@@ -17,6 +17,7 @@ public class Schedule {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id", nullable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private Location location;
 
     @NotNull
